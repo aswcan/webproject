@@ -1,0 +1,4 @@
+diff a/src/views/middlePanel.vue b/src/views/middlePanel.vue	(rejected hunks)
+@@ -6 +6 @@ export default {
+-  
++

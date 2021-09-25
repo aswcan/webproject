@@ -1,6 +1,5 @@
 // 基于axios的模块
 import axios from 'axios'
-
 const $axios = axios.create({
   baseURL: 'http://localhost:3000/',
   withCredentials: true
@@ -14,5 +13,4 @@ axios.interceptors.response.use(
     return Promise.resolve(err)
   }
 )
-
 export default $axios
