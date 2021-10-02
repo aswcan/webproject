@@ -3,25 +3,13 @@
     <div class="divtag">在线音乐</div>
     <ul class="onlinemusic list">
       <router-link to="/suggest" active-class="active"><li><i class="icon iconfont icon-tuijian"></i>推荐</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-miantubiao_diantai"></i>电台</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-SanMiAppglyphico3"></i>音乐馆</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-shipin"></i>视频</li></router-link>
+      <router-link to="/diantai" active-class="active"><li><i class="icon iconfont icon-miantubiao_diantai"></i>电台</li></router-link>
+      <router-link to="/musicclub" active-class="active"><li><i class="icon iconfont icon-SanMiAppglyphico3"></i>音乐馆</li></router-link>
+      <router-link to="/mvs" active-class="active"><li><i class="icon iconfont icon-shipin"></i>视频</li></router-link>
     </ul>
-    <div class="divtag">我的音乐</div>
-    <ul class="mymusic list">
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-xihuan"></i>我的喜欢</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-bendi"></i>本地和下载</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-SanMiAppglyphico4"></i>播放历史</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-SanMiAppglyphico2"></i>试听列表</li></router-link>
-      <router-link to="/" active-class="active"><li><i class="icon iconfont icon-yigou"></i>视频</li></router-link>
-    </ul>
-    <div class="divtag">创建的歌单</div>
+    <div class="divtag">我的歌单</div>
     <ul class="mymusiclist list">
-      <li></li>
-    </ul>
-    <div class="divtag">收藏的歌单</div>
-    <ul class="otherslist list">
-      <li></li>
+      <li v-for="(item,index) in this.$store.state.userlist" :key="index" :class="'mylist'" @click="jumpTo(item.id)">{{ item.name }}</li>
     </ul>
   </div>
 </template>
@@ -35,8 +23,12 @@ export default {
     }
   },
   methods: {
+    // 弹出播放列表
     handleClick (tab, event) {
       console.log(tab, event)
+    },
+    jumpTo (id) {
+      this.$router.push('/songlist?id=' + id)
     }
   }
 }
@@ -47,10 +39,18 @@ export default {
   .divtag{
     font-size: 12px;
     opacity: 0.7;
+    overflow: hidden;
+    min-width: 60px;
   }
   .list{
     list-style: none;
     padding: 0;
+    min-width: 4.375rem;
+    .active{
+      li{
+        background: rgb(99, 99, 109);
+      }
+    }
     a{
       text-decoration: none;
       color: snow;
@@ -61,8 +61,9 @@ export default {
       margin: 10px 0;
       padding: 5px;
       line-height: 1.875rem;
-      border-radius: 15px;
+      border-radius: 5px;
       text-decoration: none;
+      overflow: hidden;
       &:hover{
         background: rgb(99, 99, 109);
       }
@@ -75,8 +76,12 @@ export default {
       }
     }
   }
-  .active{
-    background: rgb(99, 99, 109);
+  .mymusiclist{
+    background: rgb(134, 133, 145);
+    border-radius: 5px;
+    .mylist{
+      font-size: 12px;
+    }
   }
 }
 </style>

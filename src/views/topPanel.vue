@@ -8,7 +8,7 @@
       <!-- 输入框 -->
       <div class="inpt" @click="input">
         <i class="el-icon-search" :style="contentstyle" v-text="inputxt"></i>
-        <input type="text" v-focus='focusState' v-show="inputshow" @blur="unfocus" />
+        <input type="text" v-focus='focusState' v-show="inputshow" @blur="unfocus" v-model="keywords" @keyup.enter="searchmusic(keywords)"/>
       </div>
     </div>
     <!-- 右侧组件 -->
@@ -18,7 +18,7 @@
       <!-- 用户ID -->
       <h5 class="userId" title="用户ID" @click="loginshow = !loginshow">lenlen</h5>
       <!-- 登录界面 -->
-      <div class="login" v-if="loginshow">
+      <div class="login" v-if="loginshow" draggable="true">
         <div class="shutdown" @click="loginshow = false">×</div>
         <div class="logintoggle">
           <!-- <router-link to="/suggest/login" class="login-phone" tag="span" active-class="togglestyle">手机登录</router-link>
@@ -40,10 +40,10 @@
             clearable>
           </el-input>
           <el-input class="inputtag" placeholder="请输入密码" v-model="mimainput" show-password @keyup.enter.native="loginselphone"></el-input>
-          <el-button type="primary" class="loginbtn" @click.native="loginselphone">主要按钮</el-button>
+          <el-button type="primary" class="loginbtn" @click.native="loginselphone">登录</el-button>
         </div>
         <div class="ewmdiv" v-show="!tabshow" @click="getewm">
-          <img :src="ewmsrc">
+          <img :src="ewmsrc" alt="点击刷新图片">
           <div class="notice">请使用网易云音乐app扫码登陆</div>
         </div>
         <div class="alink">
@@ -79,15 +79,24 @@ export default {
       imgSrc: require('../img/sona.png'),
       // 输入框设置
       contentstyle: { width: '11.5rem' },
+      // 输入框
       inputxt: '请输入内容',
       inputshow: 'false',
       focusState: false,
+      // 更多
       moreshow: false,
+      // 登录界面
       loginshow: false,
       tabshow: true,
+      // 二维码登录
       ewmsrc: '',
+      // 手机登录
       phoneinput: '',
-      mimainput: ''
+      mimainput: '',
+      // 搜索框
+      keywords: '',
+      // 登录结果
+      userId: ''
     }
   },
   methods: {
@@ -116,6 +125,11 @@ export default {
         console.log(e)
       })
     },
+    async searchmusic (keywords) {
+      this.$router.push(`/searchlist?keywords=${keywords}`)
+      console.log(keywords)
+      this.keywords = ''
+    },
     async CheckStatus (unikey) {
       const res = await $axios.get(`/login/qr/check?key=${unikey}&timerstamp=${Date.now()}`)
       return res.data
@@ -133,8 +147,15 @@ export default {
         }
         if (statusRes.code === 803) {
           // 这一步会返回cookie
+          console.log(statusRes)
           clearInterval(timer)
           alert('授权登录成功')
+          this.loginshow = false
+          const accountDetail = await $axios.get('/user/account')
+          this.userId = accountDetail.data.account.id
+          const playlists = await $axios.get('/user/playlist?uid=' + this.userId)
+          this.$store.state.userlist = playlists.data.playlist
+          console.log(accountDetail)
         }
       }, 3000)
     },
@@ -142,9 +163,14 @@ export default {
       if (this.mimainput === '' || this.phoneinput === '') {
         alert('请输入手机号和密码')
       } else {
-        const res = await this.$axios.get(`/login/cellphone?phone=${this.phoneinput}&password=${this.mimainput}`)
+        const res = await $axios.post(`/login/cellphone?phone=${this.phoneinput}&password=${this.mimainput}`)
         console.log(res)
-        alert(res.data.msg)
+        alert('登录成功')
+        this.userId = res.data.account.id
+        this.loginshow = false
+        const playlists = await $axios.get('/user/playlist?uid=' + this.userId)
+        this.$store.state.userlist = playlists.data.playlist
+        console.log(playlists)
       }
     }
   },

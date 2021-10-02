@@ -3,8 +3,9 @@
     <h1>推荐</h1>
     <h4>hi 今日为你推荐</h4>
     <el-row :gutter="20">
+      <!-- 每日推荐 -->
       <el-col :span="8">
-        <div class="grid-content bg-purple personal-radio">
+        <div class="grid-content bg-purple personal-radio" style="height:12.5vw; min-height: 90px; min-width: 200px">
           <img  class="img1" :src="guesssongs[0].al.picUrl">
           <div class="txt">
             <h4>{{ guesssongs[0].al.name }}</h4>
@@ -13,26 +14,29 @@
           <div class="mask"><img src="../img/播放.png" @click="click1btn"></div>
         </div>
       </el-col>
+      <!-- 猜你喜欢 -->
       <el-col :span="4">
-        <router-link to="/songlist" @click.native="click2" tag="span">
+        <router-link :to="`/songlist?id=${dailysongs.id}`" tag="span">
           <div class="grid-content bg-purple daliy30">
-            <img :src="dailysongs.coverImgUrl">
+            <img :src="dailysongs.picUrl">
             <div class="mask"><img src="../img/播放.png" @click.stop="click2btn"></div>
           </div>
         </router-link>
       </el-col>
+      <!-- 百万收藏 -->
       <el-col :span="4">
-        <router-link to="/songlist" @click.native="click3" tag="span">
+        <router-link :to="`/songlist?id=${million.id}`" tag="span">
           <div class="grid-content bg-purple millionslike">
-            <img :src="million[0].songInfo.al.picUrl">
+            <img :src="million.coverImgUrl">
             <div class="mask"><img src="../img/播放.png" @click.stop="click3btn"></div>
           </div>
         </router-link>
       </el-col>
+      <!-- 新歌速递 -->
       <el-col :span="4">
-        <router-link to="/songlist"  @click.native="click4" tag="span">
+        <router-link :to="`/songlist?id=${newsongs.id}`" tag="span">
           <div class="grid-content bg-purple newsongs">
-            <img :src="newsongs[0].album.blurPicUrl">
+            <img :src="newsongs.picUrl">
             <div class="mask"><img src="../img/播放.png" @click.stop="click4btn"></div>
           </div>
         </router-link>
@@ -41,7 +45,7 @@
     <h2>你的私荐歌单</h2>
     <el-row :gutter="20">
       <el-col :span="4" v-for="(item,index) in songlist" :key="index">
-        <router-link to="/songlist" @click.native="click5(index)" tag="span">
+        <router-link :to="`/songlist?id=${songlist[index].id}`" tag="span">
           <div class="grid-content bg-purple listss">
             <img :src="item.picUrl">
             <div class="mask">
@@ -69,82 +73,56 @@ export default {
   },
   methods: {
     async fresh () {
+      // 猜你喜欢板块
       const res1 = await $axios.get('/recommend/songs')
       this.guesssongs = res1.data.data.dailySongs
-      // console.log(res1)
-      const res2 = await $axios('/personalized')
-      const keyid = res2.data.result[0].id
-      const res2list = await $axios('/playlist/detail?id=' + keyid)
-      this.dailysongs = res2list.data.playlist
-      // console.log(res2list)
-      const res3 = await $axios.get('/playmode/intelligence/list?id=33894312&pid=24381616')
-      this.million = res3.data.data
-      // console.log(res3)
-      const res4 = await $axios.get('/top/song')
-      this.newsongs = res4.data.data
-      // console.log(res4)
+      // 每日推荐板块
+      const res2 = await $axios.get('/personalized')
+      this.dailysongs = res2.data.result[0]
+      // 百万收藏板块
+      const res3 = await $axios.get('/top/playlist?limit=1')
+      this.million = res3.data.playlists[0]
+      console.log(this.million)
+      // 新歌推荐板块
+      this.newsongs = res2.data.result[1]
+      // 推荐歌单板块
       const res5 = await $axios.get('/recommend/resource')
       this.songlist = res5.data.recommend
-      // console.log(res5)
+      console.log(this.songlist)
     },
-    click2 () {
-      // this.$store.commit('addplaylist', this.dailysongs)
-      // this.$store.commit('addplayimgsrc', this.dailysongs.coverImgUrl)
-      // this.$store.commit('addlistname', this.dailysongs.name)
-      // this.$store.commit('adddiscrip', this.dailysongs.description)
-      // this.$store.commit('addlistcreator', this.dailysongs.creator.nickname)
-      const dailysong = JSON.stringify(this.dailysongs)
-      const name = JSON.stringify(this.dailysongs.name)
-      console.log(name)
-      const description = JSON.stringify(this.dailysongs.description)
-      console.log(description)
-      const creator = JSON.stringify(this.dailysongs.creator.nickname)
-      console.log(creator)
-      const coverImgUrl = JSON.stringify(this.dailysongs.coverImgUrl)
-      console.log(coverImgUrl)
-      const id = JSON.stringify(this.dailysongs.id)
-      sessionStorage.setItem('musiclist', dailysong)
-      console.log(JSON.parse(sessionStorage.getItem('musiclist')))
-      sessionStorage.setItem('musiclistname', name)
-      sessionStorage.setItem('musiclistdiscrip', description)
-      sessionStorage.setItem('musiclistcreator', creator)
-      sessionStorage.setItem('musiclistcoversrc', coverImgUrl)
-      sessionStorage.setItem('musiclistid', id)
-      // console.log(this.$store.state.musiclist)
-    },
-    click3 () {
-      this.$store.commit('addplaylist', this.million)
-      console.log(this.$store.state.playlist)
-    },
-    click4 () {
-      this.$store.commit('addplaylist', this.newsongs)
-      console.log(this.$store.state.playlist)
-    },
-    click5 (index) {
-      this.$store.commit('addplaylist', this.songlist[index])
-      console.log(this.$store.state.playlist)
-    },
+    // 播放猜你喜欢全部歌曲
     click1btn () {
-      this.$store.commit('addplaylist', this.guesssongs)
-      console.log(this.$store.state.playlist)
+      const tracks = this.guesssongs
+      this.$store.commit('setplaylist', tracks)
+      this.$store.commit('playfromthis', 0)
     },
-    click2btn () {
-      this.$store.commit('addplaylist', this.dailysongs)
-      console.log(this.$store.state.playlist)
+    // 播放每日推荐
+    async click2btn () {
+      // 拿到id后通过id获取到对应歌单
+      const list = await $axios.get('/playlist/detail?id=' + this.dailysongs.id)
+      console.log(list)
+      // 将歌单数组存储到vuex中
+      this.$store.commit('setplaylist', list.data.playlist.tracks)
+      // 调用播放方法，从头开始播放
+      this.$store.commit('playfromthis', 0)
     },
-    // click2btn () {
-    // },
-    click3btn () {
-      this.$store.commit('addplaylist', this.million)
-      console.log(this.$store.state.playlist)
+    // 播放百万收藏
+    async click3btn () {
+      const list = await $axios.get('/playlist/detail?id=' + this.million.id)
+      this.$store.commit('setplaylist', list.data.playlist.tracks)
+      this.$store.commit('playfromthis', 0)
     },
-    click4btn () {
-      this.$store.commit('addplaylist', this.newsongs)
-      console.log(this.$store.state.playlist)
+    // 播放新歌推荐
+    async click4btn () {
+      const list = await $axios.get('/playlist/detail?id=' + this.newsongs.id)
+      this.$store.commit('setplaylist', list.data.playlist.tracks)
+      this.$store.commit('playfromthis', 0)
     },
-    click5btn (index) {
-      this.$store.commit('addplaylist', this.songlist[index])
-      console.log(this.$store.state.playlist)
+    // 播放对应的推荐歌单
+    async click5btn (index) {
+      const list = await $axios.get('/playlist/detail?id=' + this.songlist[index].id)
+      this.$store.commit('setplaylist', list.data.playlist.tracks)
+      this.$store.commit('playfromthis', 0)
     }
   },
   mounted () {
@@ -156,6 +134,7 @@ export default {
 .box{
   width: 100%;
   height: 100%;
+  min-width: 750px;
   h1{
     font-size: 2rem;
     margin: 0;
@@ -171,6 +150,8 @@ export default {
   }
   .el-col {
     border-radius: 4px;
+    height: 15vw;
+    min-height: 200px;
   }
   .bg-purple-dark {
     background: #99a9bf;
@@ -193,8 +174,12 @@ export default {
       height: 50%;
     }
     .txt{
-      width: 25%;
-      height: 50%;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
     }
     .mask{
       position: absolute;
@@ -221,8 +206,7 @@ export default {
   }
   .grid-content {
     border-radius: 4px;
-    height: 180px;
-    min-width: 180px;
+    min-width: 90px;
     cursor: pointer;
     &:hover{
       transform: translateY(-10px);

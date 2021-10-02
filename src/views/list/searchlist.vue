@@ -1,12 +1,10 @@
 <template>
   <div class="listbody">
     <div class="top">
-      <img :src="musiclistcoversrc">
       <div class="top-right">
-        <h1>{{ musiclistname }}</h1>
-        <h4>{{ muisiclistcreator }}</h4>
-        <h5>{{ musiclistdiscrip }}</h5>
-        <div class="btn"><button @click="playall"><i class="icon iconfont icon-24gl-play"></i>播放全部</button><button>收藏</button></div>
+        <h1>搜索结果</h1>
+        <h4>部分歌曲可能需要登录，会员才可以播放</h4>
+        <div class="btn"><button @click="playfromthis(0)"><i class="icon iconfont icon-24gl-play"></i>播放全部</button></div>
       </div>
     </div>
     <table>
@@ -17,13 +15,13 @@
         <td>专辑</td>
       </thead>
       <tbody>
-        <tr v-for="(song,index) in musiclist.tracks" :key="index">
+        <tr v-for="(song,index) in musiclist" :key="index">
           <td>{{ index+1 }}</td>
           <td>
             <i class="icon iconfont icon-xihuan" @click.stop="like(index)" :class="liked[index] == true?'likedstyle':''"></i>
             {{ song.name }}
           </td>
-          <td>{{ song.ar[0].name }}</td>
+          <td><span v-for="(ar,index) in song.ar" :key="index">{{ ar.name }}</span></td>
           <td>{{ song.al.name }}</td>
           <td><i class="icon iconfont icon-24gl-play" @click="playfromthis(index)"></i></td>
         </tr>
@@ -32,32 +30,23 @@
   </div>
 </template>
 <script>
-// import $axios from '../utils/request'
+import $axios from '../../utils/request'
 export default {
-  name: 'songlist',
+  name: 'searchlist',
   data () {
     return {
       liked: [],
       // list
-      musiclist: {},
-      musiclistcoversrc: '',
-      musiclistname: '',
-      muisiclistcreator: '',
-      musiclistdiscrip: '',
-      musiclistid: ''
+      musiclist: {}
     }
   },
   methods: {
-    pageloading () {
-      // 接受sessionStorage中传来的数据
-      this.musiclist = JSON.parse(sessionStorage.getItem('musiclist'))
-      console.log(this.musiclist)
-      this.musiclistcoversrc = JSON.parse(sessionStorage.getItem('musiclistcoversrc'))
-      this.musiclistname = JSON.parse(sessionStorage.getItem('musiclistname'))
-      this.muisiclistcreator = JSON.parse(sessionStorage.getItem('musiclistcreator'))
-      console.log(this.muisiclistcreator)
-      this.musiclistdiscrip = JSON.parse(sessionStorage.getItem('musiclistdiscrip'))
-      this.musiclistid = JSON.parse(sessionStorage.getItem('musiclistid'))
+    async pageloading () {
+      //  接收path地址中传过来的id
+      console.log(this.$route.query.keywords)
+      const res = await $axios.get(`/cloudsearch?keywords=${this.$route.query.keywords}`)
+      console.log(res)
+      this.musiclist = res.data.result.songs
     },
     like (i) {
       if (this.liked[i] === undefined) {
@@ -66,23 +55,26 @@ export default {
         this.$set(this.liked, i, false)
       }
     },
-    async playall () {
-      const tracks = this.musiclist.tracks
-      const playarray = []
-      tracks.forEach((number) => {
-        console.log(number)
-        // const playurl = await $axios('')
-      })
-      console.log(playarray)
-    },
     playfromthis (i) {
+      const tracks = this.musiclist
+      this.$store.commit('setplaylist', tracks)
+      this.$store.commit('playfromthis', i)
+      // console.log(this.$store.state.playsrc)
+      // console.log(this.$store.state.index)
     }
   },
-  created () {
-    this.pageloading()
+  watch: {
+    $route: {
+      handler: function (val, oldVal) {
+        this.pageloading()
+      },
+      // 深度观察监听
+      deep: true
+    }
   },
   mounted () {
     // console.log(this.$store.state.musiclist)
+    this.pageloading()
   }
 }
 </script>
@@ -91,8 +83,11 @@ export default {
   width: 100%;
   height: 100%;
   min-width: 800px;
+  i{
+    cursor: pointer;
+  }
   .top{
-    height: 25%;
+    height: 10%;
     display: flex;
     flex-direction: row;
     .top-right{
@@ -111,12 +106,13 @@ export default {
       margin: 10px;
     }
     .btn{
-      height: 15%;
+      height: 80%;
       margin: 10px;
       button{
         width: 150px;
         height: 100%;
         border-radius: 20px;
+        cursor: pointer;
       }
     }
   }
@@ -136,6 +132,11 @@ export default {
       }
       .likedstyle{
         color: red;
+      }
+      .listbar{
+        &:hover{
+          background: rgb(94, 91, 87);
+        }
       }
     }
   }

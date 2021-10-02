@@ -1,24 +1,6 @@
 <template>
   <div class="playerpanel">
-    <el-drawer
-    title="我是标题"
-    :visible.sync="drawer"
-    :with-header="false"
-    :model="true">
-      <table>
-        <thead>
-          <tr>
-            <th>歌曲</th><th>歌手</th><th>专辑</th><th>时长</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(song,index) in this.$store.state.playlist" :key="index">
-            <td>{{ song.name }}</td><td v-for="(artist,indexs) in this.$store.state.playlist" :key="indexs"></td><td></td><td></td>
-          </tr>
-        </tbody>
-      </table>
-    </el-drawer>
-    <audio :src="this.$store.state.playsrc" ref="myaudio" @ended="this.$store.commit('playfromthis', this.$store.state.index)"></audio>
+    <audio :src="`https://music.163.com/song/media/outer/url?id=${this.$store.state.playsrc}.mp3`" ref="myaudio" @ended="nextsong" autoplay></audio>
     <div class="roundpic">
       <img src="">
     </div>
@@ -27,12 +9,21 @@
         <i class="icon iconfont icon-xihuan" @click="liked = !liked" :class="liked == true?'liked':''"></i>
       </div>
       <div class="playdiv">
-        <div></div>
-        <div class="linebar"></div>
-        <i class="icon iconfont icon-houtui"></i>
-        <i class="icon iconfont icon-bofang" @click="musicplay"></i>
-        <i class="icon iconfont icon-zanting" v-show="false" @click="musicpause"></i>
-        <i class="icon iconfont icon-kuaijin"></i>
+        <div>{{ $store.state.playlist[$store.state.index-1].name }} - {{$store.state.playlist[$store.state.index-1].ar[0].name}}</div>
+        <div class="linebar">
+          <div id="progressbar"></div>
+          <div id="progressdot"></div>
+        </div>
+        <!-- 播放上一曲 -->
+        <div>
+          <i class="icon iconfont icon-houtui" @click="lastsong"></i>
+          <!-- 播放 -->
+          <i class="icon iconfont icon-bofang" v-show="!this.$store.state.isplay" @click="musicplay"></i>
+          <!-- 暂停 -->
+          <i class="icon iconfont icon-zanting" v-show="this.$store.state.isplay" @click="musicpause"></i>
+          <!-- 播放下一曲 -->
+          <i class="icon iconfont icon-kuaijin" @click="nextsong"></i>
+        </div>
       </div>
       <div>
         <i class="icon iconfont icon-xunhuanbofang" @click="drawer = true"></i>
@@ -42,6 +33,8 @@
   </div>
 </template>
 <script>
+import $axios from '../utils/request'
+import '../utils/playbar'
 export default {
   name: 'player',
   data () {
@@ -53,10 +46,27 @@ export default {
   methods: {
     musicplay () {
       this.$refs.myaudio.play()
+      this.$store.commit('changestatus', true)
     },
     musicpause () {
       this.$refs.myaudio.pause()
+      this.$store.commit('changestatus', false)
+    },
+    lastsong () {
+      this.$store.commit('playfromthis', this.$store.state.index - 2)
+    },
+    nextsong () {
+      this.$store.commit('playfromthis', this.$store.state.index)
+    },
+    async addlist () {
+      const res2 = await $axios.get('/personalized')
+      const list = await $axios.get('/playlist/detail?id=' + res2.data.result[0].id)
+      this.$store.commit('setplaylist', list.data.playlist.tracks)
+      this.$store.commit('playfromthis', 0)
     }
+  },
+  created () {
+    this.addlist()
   }
 }
 </script>
@@ -66,7 +76,9 @@ export default {
   align-items: center;
   padding: 0 20px;
   audio{
-  visibility: hidden;
+  // visibility: hidden;
+  z-index: 10;
+  display: block !important;
   }
   .roundpic{
     height: 5rem;
@@ -97,11 +109,39 @@ export default {
     }
     .playdiv{
       width: 70%;
-      height: 4px;
-      background: rgb(180, 180, 180);
+      height: 100%;
       border-radius: 2px;
       display: flex;
+      align-items: center;
       justify-content: center;
+      flex-wrap: wrap;
+      .linebar{
+        width: 100%;
+        height: 6px;
+        background: rgb(148, 149, 156);
+        border-radius: 4px;
+        position: relative;
+        #progressbar{
+          height: 100%;
+          background: cornsilk;
+          border-radius: 4px;
+        }
+        #progressdot{
+          width: 8px;
+          height: 8px;
+          border-radius: 4px;
+          position: absolute;
+          top: 50%;
+          transform: translate(-25%,-50%);
+          background: cyan;
+          transition: all 0.2s linear;
+          &:hover{
+            top: 75%;
+            transform: scale(1.5) translateY(-50%);
+            transition: all 0.2s linear;
+          }
+        }
+      }
       i{
         padding-top: 5px;
         &:hover{

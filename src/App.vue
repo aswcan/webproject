@@ -67,13 +67,17 @@ body{
         background: rgb(66, 69, 75);
       }
       .icon-wangyiyunyinle{
+        text-align: center;
+        padding: 10% 0;
+        width: 100%;
+        min-height: 40px;
         display: block;
         font-size: 36px;
-        padding: 12px;
         background-color: rgb(66, 69, 75);
       }
     }
     .el-main{
+      width: 85vw;
       margin-left: 15vw;
       height: calc(100vh - 7.75rem);
       background: #2a2d33;
