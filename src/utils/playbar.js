@@ -23,10 +23,8 @@ progressBarbg.addEventListener('mousedown', function (event) {
     const pgsWidth = parseFloat(window.getComputedStyle(progressBarbg, null).width.replace('px', ''))
     const rate = event.offsetX / pgsWidth
     console.log(rate)
-    if (rate !== 0) {
-      audio.currentTime = audio.duration * rate
-      updateProgress(audio)
-    }
+    audio.currentTime = audio.duration * rate
+    updateProgress(audio)
   }
 })
 // 拖动

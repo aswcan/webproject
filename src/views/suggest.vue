@@ -6,7 +6,7 @@
       <!-- 每日推荐 -->
       <el-col :span="8">
         <div class="grid-content bg-purple personal-radio" style="height:12.5vw; min-height: 90px; min-width: 200px">
-          <img  class="img1" :src="guesssongs[0].al.picUrl">
+          <img class="img1" :src="guesssongs[0].al.picUrl">
           <div class="txt">
             <h4>{{ guesssongs[0].al.name }}</h4>
             <p>{{ guesssongs[0].ar[0].name }}</p>
@@ -18,7 +18,7 @@
       <el-col :span="4">
         <router-link :to="`/songlist?id=${dailysongs.id}`" tag="span">
           <div class="grid-content bg-purple daliy30">
-            <img :src="dailysongs.picUrl">
+            <img v-if="dailysongs" :src="dailysongs.picUrl">
             <div class="mask"><img src="../img/播放.png" @click.stop="click2btn"></div>
           </div>
         </router-link>
@@ -27,7 +27,7 @@
       <el-col :span="4">
         <router-link :to="`/songlist?id=${million.id}`" tag="span">
           <div class="grid-content bg-purple millionslike">
-            <img :src="million.coverImgUrl">
+            <img v-if="million" :src="million.coverImgUrl">
             <div class="mask"><img src="../img/播放.png" @click.stop="click3btn"></div>
           </div>
         </router-link>
@@ -36,7 +36,7 @@
       <el-col :span="4">
         <router-link :to="`/songlist?id=${newsongs.id}`" tag="span">
           <div class="grid-content bg-purple newsongs">
-            <img :src="newsongs.picUrl">
+            <img v-if="newsongs" :src="newsongs.picUrl">
             <div class="mask"><img src="../img/播放.png" @click.stop="click4btn"></div>
           </div>
         </router-link>
@@ -64,7 +64,13 @@ export default {
   name: 'suggest',
   data () {
     return {
-      guesssongs: {},
+      guesssongs: [{
+        al: '',
+        name: '',
+        ar: [{
+          name: ''
+        }]
+      }],
       newsongs: {},
       dailysongs: {},
       million: {},
@@ -157,7 +163,7 @@ export default {
     background: #99a9bf;
   }
   .bg-purple {
-    background: linear-gradient( 45deg, rgb(55, 55, 80)50%, rgb(32, 32, 37));
+    background: linear-gradient( 45deg, rgb(163, 163, 163)50%, rgb(124, 124, 124));
     display: flex;
     align-items: center;
     position: relative;

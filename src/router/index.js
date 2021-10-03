@@ -11,6 +11,7 @@ import searchlist from '@/views/list/searchlist.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
+  mode: 'hash',
   routes: [
     {
       path: '/',

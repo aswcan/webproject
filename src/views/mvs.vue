@@ -4,7 +4,7 @@
     <h4>推荐</h4>
     <div class="top">
       <div class="topmvs">
-        <div class="item" v-for="(item, index) in topMvs" :key="index">
+        <div class="item" @click="toMv(item.id)" v-for="(item, index) in topMvs" :key="index">
           <div class="img-wrap">
             <img class="cover" v-lazy="item.cover" alt="" />
             <div class="num-wrap">
@@ -232,11 +232,11 @@ export default {
         border-radius: 20px;
         cursor: pointer;
         &:hover{
-          background: rgb(86, 86, 95);
+          background: rgb(208, 208, 209);
         }
       }
       .active{
-        background: rgb(86, 86, 95);
+        background: rgb(151, 151, 156);
       }
       li{
         border-right: 1px solid;
@@ -249,34 +249,6 @@ export default {
   h1{
     font-size: 2rem;
     margin: 0;
-  }
-  .top{
-    width: 97%;
-    padding: 15px;
-    background: rgb(54, 55, 56);
-    overflow: hidden;
-    border-radius: 5px;
-    position: relative;
-    .topmvs{
-      width: 3500px;
-      display: flex;
-      overflow: hidden;
-      flex-wrap: nowrap;
-    }
-    &:hover{
-      overflow-x: scroll;
-    }
-    &::-webkit-scrollbar {/*滚动条整体样式*/
-        width: 1px;     /*高宽分别对应横竖滚动条的尺寸*/
-        height: 10px;
-    }
-    &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-      border-radius: 10px;
-      background: #949494;
-    }
-    &::-webkit-scrollbar-track {/*滚动条里面轨道*/
-      background: rgb(66, 69, 75);
-    }
   }
   .item{
     width: 20%;
@@ -347,6 +319,33 @@ export default {
   }
   .fenye{
     margin: 0 auto;
+  }
+  .top{
+    width: 97%;
+    padding: 15px;
+    background: rgb(162, 164, 167);
+    overflow: scroll;
+    border-radius: 5px;
+    position: relative;
+    .topmvs{
+      width: 3500px;
+      display: flex;
+      flex-wrap: nowrap;
+      .img-wrap{
+        height: 170px;
+      }
+    }
+    &::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 1px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 10px;
+    }
+    &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+      border-radius: 10px;
+      background: #949494;
+    }
+    &::-webkit-scrollbar-track {/*滚动条里面轨道*/
+      background: rgb(192, 191, 191);
+    }
   }
 }
 </style>

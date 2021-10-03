@@ -9,7 +9,12 @@ export default new vuex.Store({
   state: {
     playsrc: '',
     index: 0,
-    playlist: [],
+    playlist: [
+      {
+        name: '',
+        ar: [{ name: '' }]
+      }
+    ],
     isplay: false,
     musiclist: {},
     userlist: ''

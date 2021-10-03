@@ -11,7 +11,7 @@
     <h4>精品歌单</h4>
     <el-row :gutter="20">
       <el-col :span="4" v-for="(item,index) in highquality" :key="index">
-        <router-link :to="`/songlist?id=${highquality[index].id}`" @click.native="click5(index)" tag="span">
+        <router-link :to="`/songlist?id=${highquality[index].id}`" tag="span">
           <div class="grid-content bg-purple listss">
             <img :src="item.coverImgUrl">
             <div class="mask">
@@ -25,7 +25,7 @@
     <h4>推荐电台</h4>
     <el-row :gutter="20">
       <el-col :span="4" v-for="(item,index) in categories" :key="index">
-        <router-link to="/radiolist?id=" tag="span">
+        <router-link :to="`/radiolist?id=${item.id }`" tag="span">
           <div class="grid-content bg-purple listss">
             <img :src="item.picUrl">
             <div class="mask">
@@ -39,8 +39,8 @@
     <h4>推荐MV</h4>
     <el-row :gutter="20">
       <el-col :span="6" v-for="(item,index) in mvs" :key="index">
-        <router-link to="/radiolist?id=" tag="span">
-          <div class="grid-content bg-purple listss">
+        <router-link :to="`/mv?id=${item.id}`" tag="span">
+          <div class="grid-content bg-purple listss mv">
             <img :src="item.picUrl">
             <div class="playcount"><i class="icon iconfont icon-24gl-play"></i>{{item.playCount}}</div>
             <div class="mask">
@@ -95,7 +95,7 @@ export default {
     //   this.radios = res.data.djRadios
     // },
     async click5btn (index) {
-      const list = await $axios.get('/playlist/detail?id=' + this.songlist[index].id)
+      const list = await $axios.get('/playlist/detail?id=' + this.highquality[index].id)
       this.$store.commit('setplaylist', list.data.playlist.tracks)
       this.$store.commit('playfromthis', 0)
     }
@@ -169,7 +169,7 @@ export default {
       right: 4px;
       border-radius: 2px;
       padding: 5px;
-      background: rgb(77, 77, 77);
+      background: rgb(156, 156, 156);
     }
     .mask{
       position: absolute;
@@ -181,7 +181,7 @@ export default {
       border-radius: 4px;
       opacity: 0;
       &:hover{
-        background: rgba($color: #000000, $alpha: .5);
+        background: rgba($color: #3d3d3d, $alpha: .5);
         opacity: 1;
         transition: 0.1s linear;
       }
@@ -194,12 +194,16 @@ export default {
   .grid-content {
     border-radius: 4px;
     min-width: 90px;
+    overflow: hidden;
     cursor: pointer;
     &:hover{
       transform: translateY(-10px);
       transition: 0.2s ease;
       color: rgb(179, 215, 231);
     }
+  }
+  .mv{
+    max-height: 185px;
   }
   .row-bg {
     padding: 10px 0;

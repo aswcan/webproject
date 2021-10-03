@@ -87,7 +87,7 @@ export default {
     cursor: pointer;
   }
   .top{
-    height: 10%;
+    height: 20%;
     display: flex;
     flex-direction: row;
     .top-right{
@@ -106,7 +106,7 @@ export default {
       margin: 10px;
     }
     .btn{
-      height: 80%;
+      height: 20%;
       margin: 10px;
       button{
         width: 150px;

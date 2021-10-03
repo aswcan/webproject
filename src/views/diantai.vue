@@ -21,11 +21,12 @@
       </el-col>
     </el-row>
     <h2>分类</h2>
-    <el-radio-group v-model="radio" size="mini" :style="background">
-      <el-radio-button :label="item.name" v-for="(item, index) in categories" :key="index" @click.prevent.native="search(index)"></el-radio-button>
-    </el-radio-group>
+    <ul class="tabs-wrap">
+      <li class="tab" v-for="(item, index) in categories" :key="index" @click="search(index)" :class="{'actives':activeArray[index] == 1}">
+        <span>{{ item.name }}</span>
+      </li>
+    </ul>
     <el-row :gutter="20">
-      <h4>{{ radio }}</h4>
       <el-col :span="4" v-for="(item,index) in radios" :key="index">
         <router-link :to="`/radiolist?id=${radios[index].id}`" tag="span">
           <div class="grid-content bg-purple listss">
@@ -46,7 +47,13 @@ export default {
   name: 'diantai',
   data () {
     return {
-      guessdj: {},
+      guessdj: [
+        {
+          picUrl: '',
+          name: '',
+          dj: { nickname: '' }
+        }
+      ],
       bannerurl: [],
       categories: [],
       radio: '',
@@ -54,15 +61,18 @@ export default {
       background: {
         display: 'flex',
         boder: 'none'
-      }
+      },
+      activeArray: [1]
     }
   },
   methods: {
     async fresh () {
+      // 电台节目
+      const res3 = await $axios.get('/dj/catelist')
+      this.categories = res3.data.categories
       // 推荐电台
       const res1 = await $axios.get('/dj/recommend')
       this.guessdj = res1.data.djRadios
-      console.log(res1)
       // 推荐歌单板块
       const res5 = await $axios.get('/recommend/resource')
       this.songlist = res5.data.recommend
@@ -70,19 +80,18 @@ export default {
       const res2 = await $axios.get('/dj/banner')
       this.bannerurl = res2.data.data
       // this.bannerurl = res.data.data
-      // 电台节目
-      const res3 = await $axios.get('/dj/catelist')
-      this.categories = res3.data.categories
+      this.search(0)
     },
     async search (index) {
       const id = this.categories[index].id
       const res = await $axios.get('/dj/recommend/type?type=' + id)
       this.radios = res.data.djRadios
+      this.activeArray = []
+      this.$set(this.activeArray, index, 1)
     }
   },
   mounted () {
     this.fresh()
-    this.search(0)
   }
 }
 </script>
@@ -94,9 +103,6 @@ export default {
   h1{
     font-size: 2rem;
     margin: 0;
-  }
-  el-radio-button{
-    background: black !important;
   }
   .el-carousel__item{
     display: flex;
@@ -124,7 +130,7 @@ export default {
     border-radius: 4px;
   }
   .bg-purple {
-    background: linear-gradient( 45deg, rgb(61, 61, 63)50%, rgb(10, 10, 10));
+    background: linear-gradient( 45deg, rgb(199, 199, 199)50%, rgb(100, 100, 100));
     display: flex;
     align-items: center;
     position: relative;
@@ -171,6 +177,7 @@ export default {
   .grid-content {
     border-radius: 4px;
     min-width: 90px;
+    max-height: 245px;
     cursor: pointer;
     &:hover{
       transform: translateY(-10px);
@@ -187,6 +194,22 @@ export default {
     overflow: hidden;
     font-size: 12px;
     margin-bottom: 1.875rem;
+  }
+  .tabs-wrap{
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 1300px;
+    li{
+      padding: 10px;
+      &:hover{
+        background: #DCDFE6;
+      }
+      border-right: solid 1px #DCDFE6;
+    }
+  }
+  .actives{
+    background: #DCDFE6;
   }
 }
 </style>

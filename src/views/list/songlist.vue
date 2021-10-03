@@ -39,7 +39,11 @@ export default {
     return {
       liked: [],
       // list
-      musiclist: {},
+      musiclist: {
+        name: '',
+        creator: { nickname: '' },
+        discription: ''
+      },
       isshow: false
     }
   },
@@ -112,6 +116,12 @@ export default {
     }
     h1,h4,h5{
       margin: 10px;
+    }
+    h5{
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
     }
     .btn{
       height: 15%;
