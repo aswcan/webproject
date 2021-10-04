@@ -157,7 +157,7 @@ export default {
     background: #99a9bf;
   }
   .bg-purple {
-    background: linear-gradient( 45deg, rgb(55, 55, 80)50%, rgb(32, 32, 37));
+    background: linear-gradient( 45deg, rgb(163, 163, 163)50%, rgb(124, 124, 124));
     display: flex;
     align-items: center;
     position: relative;

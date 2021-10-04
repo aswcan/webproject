@@ -2,9 +2,9 @@
   <div class="div1">
     <div class="left">
       <!-- goback -->
-      <i class="el-icon-arrow-left"></i>
+      <i class="el-icon-arrow-left" @click="$router.go(-1)"></i>
       <!-- next -->
-      <i class="el-icon-arrow-right"></i>
+      <i class="el-icon-arrow-right" @click="$router.go(1)"></i>
       <!-- 输入框 -->
       <div class="inpt" @click="input">
         <i class="el-icon-search" :style="contentstyle" v-text="inputxt"></i>
@@ -16,17 +16,11 @@
       <!-- 头像 -->
       <img :src="imgSrc" class="user" title="用户" @click="loginshow = !loginshow"/>
       <!-- 用户ID -->
-      <h5 class="userId" title="用户ID" @click="loginshow = !loginshow">lenlen</h5>
+      <h5 class="userId" title="用户ID" @click="loginshow = !loginshow">{{ userNickName }}</h5>
       <!-- 登录界面 -->
       <div class="login" v-if="loginshow" draggable="true">
         <div class="shutdown" @click="loginshow = false">×</div>
         <div class="logintoggle">
-          <!-- <router-link to="/suggest/login" class="login-phone" tag="span" active-class="togglestyle">手机登录</router-link>
-          <router-link to="/suggest/loginewm"
-          class="login-erweima"
-          tag="span"
-          active-class="togglestyle"
-          >二维码登录</router-link> -->
           <span class="login-phone" @click="tabshow=true" :class="tabshow==true?'togglestyle':''">手机登录</span>
           <span class="login-erweima" @click="tabshow=false" :class="tabshow==!true?'togglestyle':''">二维码登录</span>
         </div>
@@ -84,7 +78,7 @@ export default {
       inputshow: 'false',
       focusState: false,
       // 更多
-      moreshow: false,
+      moreshow: true,
       // 登录界面
       loginshow: false,
       tabshow: true,
@@ -96,7 +90,8 @@ export default {
       // 搜索框
       keywords: '',
       // 登录结果
-      userId: ''
+      userId: '',
+      userNickName: 'lenlen'
     }
   },
   methods: {
@@ -152,6 +147,8 @@ export default {
           alert('授权登录成功')
           this.loginshow = false
           const accountDetail = await $axios.get('/user/account')
+          this.userNickName = accountDetail.data.profile.nickname
+          this.imgSrc = accountDetail.data.profile.avatarUrl
           this.userId = accountDetail.data.account.id
           const playlists = await $axios.get('/user/playlist?uid=' + this.userId)
           this.$store.state.userlist = playlists.data.playlist
@@ -162,15 +159,22 @@ export default {
     async loginselphone () {
       if (this.mimainput === '' || this.phoneinput === '') {
         alert('请输入手机号和密码')
-      } else {
-        const res = await $axios.post(`/login/cellphone?phone=${this.phoneinput}&password=${this.mimainput}`)
-        console.log(res)
+        return
+      }
+      const res = await $axios.post(`/login/cellphone?phone=${this.phoneinput}&password=${this.mimainput}`)
+      console.log(res)
+      if (res.data.code === 200) {
         alert('登录成功')
         this.userId = res.data.account.id
         this.loginshow = false
+        const detail = await $axios.get('/user/account')
+        this.userNickName = detail.data.profile.nickname
+        this.imgSrc = detail.data.profile.avatarUrl
         const playlists = await $axios.get('/user/playlist?uid=' + this.userId)
         this.$store.state.userlist = playlists.data.playlist
-        console.log(playlists)
+        // console.log(playlists)
+      } else {
+        console.log('登陆失败')
       }
     }
   },
@@ -194,11 +198,12 @@ export default {
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  background: #909399;
+  background: #e4e4e4;
   align-items: center;
   i {
     width: 2em;
     height: 2em;
+    cursor: pointer;
     &::before {
       font-size: 1em;
       line-height: 2rem;
@@ -224,7 +229,7 @@ export default {
       position: relative;
       width: 12.5rem;
       height: 2.1875rem;
-      background:#948487;
+      background:#e6e6e6;
       border-radius: 35px;
       // padding: 0 1.09375rem;
       input {
@@ -235,8 +240,8 @@ export default {
         line-height: 2.1875rem;
         outline: none;
         border: none;
-        color: white;
-        background: #948487;
+        color: rgb(82, 82, 82);
+        background: #d4d4d4;
         padding: 0 .875rem;
       }
       .el-icon-search{
@@ -349,7 +354,7 @@ export default {
         font-size: .75rem;
         a{
           margin-right: 8px;
-          color: rgb(92, 92, 92);
+          color: rgb(201, 201, 201);
         }
       }
     }
@@ -366,13 +371,13 @@ export default {
       border-radius: 8px;
       top: 3.125rem;
       right: .3125rem;
-      background: rgb(66, 69, 75);
+      background: rgb(175, 177, 182);
       box-shadow: 2px 2px 4px rgba(0, 0, 0, .12), 2px 0 6px rgba(0, 0, 0, .04);
       // opacity: 0.8;
-      z-index: 1;
+      z-index: 5;
       a{
         text-decoration: none;
-        color: rgb(211, 219, 223);
+        color: #000;
         span{
           margin-left: .625rem;
         }

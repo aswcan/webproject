@@ -48,12 +48,12 @@ export default {
     min-width: 4.375rem;
     .active{
       li{
-        background: rgb(99, 99, 109);
+        background: rgb(194, 193, 193);
       }
     }
     a{
       text-decoration: none;
-      color: snow;
+      color: #000;
     }
     li{
       height: 1.875rem;
@@ -65,23 +65,23 @@ export default {
       text-decoration: none;
       overflow: hidden;
       &:hover{
-        background: rgb(99, 99, 109);
+        background: rgb(235, 234, 234);
       }
       i{
         margin:0 15px 0 10px;
         border-radius: 50%;
-        .icon-shipin{
-          border: 1px solid snow;
-        }
       }
     }
   }
   .mymusiclist{
-    background: rgb(134, 133, 145);
+    background: rgb(206, 206, 206);
     border-radius: 5px;
     .mylist{
       font-size: 12px;
     }
+  }
+  .actives{
+    background: rgb(235, 235, 235);
   }
 }
 </style>

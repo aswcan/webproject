@@ -34,7 +34,7 @@
 </template>
 <script>
 import $axios from '../utils/request'
-import '../utils/playbar'
+// import '../utils/playbar'
 export default {
   name: 'player',
   data () {

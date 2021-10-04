@@ -169,7 +169,7 @@ export default {
       right: 4px;
       border-radius: 2px;
       padding: 5px;
-      background: rgb(77, 77, 77);
+      background: rgb(156, 156, 156);
     }
     .mask{
       position: absolute;
@@ -181,7 +181,7 @@ export default {
       border-radius: 4px;
       opacity: 0;
       &:hover{
-        background: rgba($color: #000000, $alpha: .5);
+        background: rgba($color: #3d3d3d, $alpha: .5);
         opacity: 1;
         transition: 0.1s linear;
       }
@@ -194,12 +194,16 @@ export default {
   .grid-content {
     border-radius: 4px;
     min-width: 90px;
+    overflow: hidden;
     cursor: pointer;
     &:hover{
       transform: translateY(-10px);
       transition: 0.2s ease;
       color: rgb(179, 215, 231);
     }
+  }
+  .mv{
+    max-height: 185px;
   }
   .row-bg {
     padding: 10px 0;

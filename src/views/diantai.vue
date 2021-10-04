@@ -95,9 +95,6 @@ export default {
     font-size: 2rem;
     margin: 0;
   }
-  el-radio-button{
-    background: black !important;
-  }
   .el-carousel__item{
     display: flex;
     border-radius: 5px;
@@ -124,7 +121,7 @@ export default {
     border-radius: 4px;
   }
   .bg-purple {
-    background: linear-gradient( 45deg, rgb(61, 61, 63)50%, rgb(10, 10, 10));
+    background: linear-gradient( 45deg, rgb(199, 199, 199)50%, rgb(100, 100, 100));
     display: flex;
     align-items: center;
     position: relative;
@@ -171,6 +168,7 @@ export default {
   .grid-content {
     border-radius: 4px;
     min-width: 90px;
+    max-height: 245px;
     cursor: pointer;
     &:hover{
       transform: translateY(-10px);
@@ -187,6 +185,22 @@ export default {
     overflow: hidden;
     font-size: 12px;
     margin-bottom: 1.875rem;
+  }
+  .tabs-wrap{
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 1300px;
+    li{
+      padding: 10px;
+      &:hover{
+        background: #DCDFE6;
+      }
+      border-right: solid 1px #DCDFE6;
+    }
+  }
+  .actives{
+    background: #DCDFE6;
   }
 }
 </style>

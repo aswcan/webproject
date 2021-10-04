@@ -287,10 +287,10 @@ export default {
       }
       &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
         border-radius: 10px;
-        background: #535353;
+        background: #d6d6d6;
       }
       &::-webkit-scrollbar-track {/*滚动条里面轨道*/
-        background: rgb(66, 69, 75);
+        background: rgb(255, 255, 255);
       }
       h3{
         margin: 10px;
@@ -306,13 +306,11 @@ export default {
         .num-wrap{
           position: absolute;
           top: 4px;
-          color: white;
         }
         .time{
           position: absolute;
           bottom: 4px;
           left: 14px;
-          color: white;
         }
         .info-wrap{
           font-size: 12px;
@@ -351,7 +349,7 @@ export default {
     }
   }
   .comment-wrap{
-    background: rgb(86, 84, 95);
+    background: rgb(196, 196, 196);
     border-radius: 5px;
     padding:5px 20px;
     .comments-wrap{
